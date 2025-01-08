@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Resident Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Resident Dashboard</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Resident Info Section -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5>Resident Info</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> <span th:text="${resident.name}"></span></p>
+                    <p><strong>Email:</strong> <span th:text="${resident.email}"></span></p>
+                    <p><strong>Phone:</strong> <span th:text="${resident.phone}"></span></p>
+                    <a href th:href="@{/resident/edit}" class="btn btn-primary">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Room Info Section -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5>Assigned Rooms</h5>
+                </div>
+                <div class="card-body">
+                    <div th:each="room : ${room}">
+                        <p><strong>Room ID:</strong> <span th:text="${room.id}"></span></p>
+                        <p><strong>Size:</strong> <span th:text="${room.size}"></span></p>
+                        <p><strong>Equipment:</strong> <span th:text="${room.equipments}"></span></p>
+                        <p><strong>Availability:</strong>
+                            <span th:text="${room.available ? 'Available' : 'Occupied'}"></span>
+                        </p>
+                        <hr>
+                    </div>
+                    <div th:if="${#lists.isEmpty(room)}" class="text-center">
+                        <p>No rooms assigned yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Features -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5>Announcements</h5>
+                </div>
+                <div class="card-body">
+                    <p>No announcements at the moment. Stay tuned!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
