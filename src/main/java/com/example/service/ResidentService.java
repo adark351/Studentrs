@@ -6,6 +6,9 @@ import com.example.repository.ResidentRepository;
 import com.example.repository.RoomRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -75,15 +78,59 @@ public class ResidentService {
         Resident resident = residentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Resident not found"));
 
-        for (Room room : resident.getRooms()) {
-            room.setResident(null);  // Remove the association
+        // Remove the association with the room, if any
+        Room room = resident.getRoom();
+        if (room != null) {
+            room.setResident(null);
             roomRepository.save(room);
         }
 
+        // Delete the resident
         residentRepository.deleteById(id);
     }
+
     public Optional<Resident> findByEmail(String email) {
         return residentRepository.findByEmail(email);
     }
+    public Optional<Resident> getLoggedInResident() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-}
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+            User user = (User) authentication.getPrincipal();
+            return residentRepository.findByEmail(user.getUsername());
+        }
+
+        return Optional.empty();
+    }
+    public Resident assignRoom(Long residentId, Long roomId) {
+        Resident resident = residentRepository.findById(residentId)
+                .orElseThrow(() -> new RuntimeException("Resident not found"));
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found"));
+
+        // Ensure the room is available
+        if (room.getResident() != null) {
+            throw new RuntimeException("Room is already occupied");
+        }
+
+        // Update the room and resident relationship
+        resident.setRoom(room);
+        room.setResident(resident);
+
+        return residentRepository.save(resident);
+    }
+
+    public Resident removeRoom(Long residentId) {
+        Resident resident = residentRepository.findById(residentId)
+                .orElseThrow(() -> new RuntimeException("Resident not found"));
+
+        Room room = resident.getRoom();
+        if (room != null) {
+            room.setResident(null); // Detach the resident from the room
+            resident.setRoom(null); // Detach the room from the resident
+        }
+
+        return residentRepository.save(resident);
+    }
+    }
+

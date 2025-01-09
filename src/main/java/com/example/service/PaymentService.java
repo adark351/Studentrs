@@ -5,6 +5,7 @@ import com.example.entity.PaymentStatus;
 import com.example.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -13,7 +14,8 @@ import java.util.Optional;
 
 @Service
 public class PaymentService {
-
+    @Autowired
+    private EmailService emailService;
     @Autowired
     private PaymentRepository paymentRepository;
 
@@ -61,5 +63,18 @@ public class PaymentService {
     }
     public Optional<Payment> getPaymentById(Long id) {
         return paymentRepository.findById(id);  // Returns Optional<Payment>
+    }
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void sendPaymentReminders() {
+        List<Payment> overduePayments = paymentRepository.findByStatus(PaymentStatus.OVERDUE);
+        for (Payment payment : overduePayments) {
+            String email = payment.getResident().getEmail(); // Assuming you have an email field in Resident
+            String subject = "Payment Reminder";
+            String text = "Dear " + payment.getResident().getName() + ",\n\n" +
+                    "This is a reminder that your payment for the amount of " + payment.getAmount() + " is overdue.\n" +
+                    "Please make the payment as soon as possible.\n\n" +
+                    "Thank you for your attention.";
+            emailService.sendPaymentReminder(email, subject, text);
+        }
     }
 }

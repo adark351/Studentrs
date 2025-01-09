@@ -1,8 +1,7 @@
 package com.example.entity;
 
-public enum RequestStatus {
+public enum IncidentStatus {
     PENDING,
     IN_PROGRESS,
-    RESOLVED,
-    REJECTED
+    RESOLVED
 }

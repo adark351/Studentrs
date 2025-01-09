@@ -4,7 +4,6 @@ import com.example.entity.Resident;
 import com.example.entity.Room;
 import com.example.service.ResidentService;
 import com.example.service.RoomService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,10 +16,13 @@ import java.util.List;
 @Controller
 public class ResidentController {
 
-    @Autowired
-    private ResidentService residentService;
-    @Autowired
-    private RoomService roomService;
+    public ResidentController(ResidentService residentService, RoomService roomService) {
+        this.residentService = residentService;
+        this.roomService = roomService;
+    }
+
+    private final ResidentService residentService;
+    private final RoomService roomService;
 
     // Show the edit form with the current resident details
     @GetMapping("/resident/edit")

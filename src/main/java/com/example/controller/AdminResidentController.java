@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.service.IncidentService;
 import com.example.service.ResidentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,12 @@ public class AdminResidentController {
 
     @Autowired
     private ResidentService residentService;
+
+    public AdminResidentController(IncidentService incidentService) {
+        this.incidentService = incidentService;
+    }
+
+    private final IncidentService incidentService;
 
     /**
      * Display the list of all residents.

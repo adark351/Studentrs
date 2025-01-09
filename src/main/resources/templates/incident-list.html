@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Incident List</title>
+</head>
+<body>
+<h1>Incidents</h1>
+
+<!-- Incident Table -->
+<table border="1">
+    <thead>
+    <tr>
+        <th>Resident</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Reported At</th>
+        <th>Technician</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="incident : ${incidents}">
+        <td th:text="${incident.resident.name}"></td>
+        <td th:text="${incident.type}"></td>
+        <td th:text="${incident.description}"></td>
+        <td th:text="${incident.status}"></td>
+        <td th:text="${incident.reportedAt}"></td>
+        <td>
+            <!-- Dropdown to select a technician -->
+            <form th:action="@{/admin/assign-technician}" method="post">
+                <input type="hidden" name="incidentId" th:value="${incident.id}">
+                <select name="technicianId" required>
+                    <option value="" disabled selected>Select Technician</option>
+                    <option th:each="technician : ${technicians}"
+                            th:value="${technician.id}"
+                            th:text="${technician.name}">
+                    </option>
+                </select>
+                <button type="submit">Assign</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
