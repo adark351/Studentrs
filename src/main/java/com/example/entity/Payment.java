@@ -1,8 +1,13 @@
 package com.example.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import lombok.Data;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+@Data
 @Entity
 public class Payment {
 
@@ -10,68 +15,41 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Double amount; // Payment amount
+    @ManyToOne(optional = false) // Each payment must have a resident
+    @JoinColumn(name = "resident_id", nullable = false)
+    private Resident resident;
 
-    @Column(nullable = false)
-    private LocalDate paymentDate; // Date of payment
+    @Column(nullable = false) // Due date is required
+    private LocalDate dueDate;
+
+    private LocalDate paymentDate; // Set only when payment is made
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private PaymentStatus status; // Status of the payment (e.g., PENDING, COMPLETED)
-    private LocalDate dueDate;
+    private PaymentStatus status;
 
-    public LocalDate getDueDate() {
-        return dueDate;
+    @Column(nullable = false)
+    private Double amount;
+
+    @PrePersist
+    @PreUpdate
+    private void updateStatus() {
+        if (paymentDate != null) {
+            status = PaymentStatus.PAID; // If payment date exists, it's paid
+        } else if (LocalDate.now().isAfter(dueDate)) {
+            status = PaymentStatus.OVERDUE; // If today is after the due date and not paid
+        } else {
+            status = PaymentStatus.PENDING; // Default is pending
+        }
+    }
+    public String getFormattedPaymentDate() {
+        if (paymentDate == null) {
+            return "Not Paid";
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return paymentDate instanceof LocalDate ?
+                ((LocalDate) paymentDate).format(formatter) :
+                new SimpleDateFormat("yyyy-MM-dd").format(paymentDate);
     }
 
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "resident_id", nullable = false)
-    private Resident resident; // The resident associated with the payment
-
-    // Getters and setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public LocalDate getPaymentDate() {
-        return paymentDate;
-    }
-
-    public void setPaymentDate(LocalDate paymentDate) {
-        this.paymentDate = paymentDate;
-    }
-
-    public PaymentStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(PaymentStatus status) {
-        this.status = status;
-    }
-
-    public Resident getResident() {
-        return resident;
-    }
-
-    public void setResident(Resident resident) {
-        this.resident = resident;
-    }
 }

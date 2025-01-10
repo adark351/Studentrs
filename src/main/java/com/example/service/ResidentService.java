@@ -37,6 +37,11 @@ public class ResidentService {
     public Optional<Resident> getResidentById(Long id) {
         return residentRepository.findById(id);
     }
+    public Resident getResidentByIde(Long id) {
+        return residentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Resident not found"));
+    }
+
 
     /**
      * Add a new resident.

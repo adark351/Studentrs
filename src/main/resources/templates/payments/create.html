@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Create Payment</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+  <h1>Create Payment</h1>
+  <form action="/admin/payments" method="post">
+    <div class="form-group">
+      <label for="residentId">Resident ID:</label>
+      <input type="number" class="form-control" id="residentId" name="residentId" required>
+    </div>
+    <div class="form-group">
+      <label for="dueDate">Due Date:</label>
+      <input type="date" class="form-control" id="dueDate" name="dueDate" required>
+    </div>
+    <div class="form-group">
+      <label for="amount">Amount:</label>
+      <input type="number" class="form-control" step="0.01" id="amount" name="amount" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Payment</button>
+  </form>
+  <a href="/admin/payments" class="btn btn-secondary mt-3">Back to Payments</a>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

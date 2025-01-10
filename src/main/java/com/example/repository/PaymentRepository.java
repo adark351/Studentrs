@@ -16,7 +16,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findByStatusAndPaymentDateBefore(PaymentStatus status, LocalDate currentDate);
 
     // Count overdue payments
-    long countByStatusAndPaymentDateBefore(PaymentStatus status, LocalDate currentDate);
+    long countByStatus(PaymentStatus status);
 
     // Find payments by resident
     List<Payment> findByStatus(PaymentStatus status);
@@ -24,4 +24,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findByResidentId(Long residentId);
 
     Optional<Payment> findById(Long id);
+
+
 }

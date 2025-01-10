@@ -1,85 +1,236 @@
 <!DOCTYPE html>
-
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Resident Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --accent-color: #4f46e5;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+        }
 
+        body {
+            background-color: var(--bg-primary);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--bg-secondary) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--text-primary) !important;
+        }
+
+        .nav-link {
+            color: var(--text-secondary) !important;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary) !important;
+        }
+
+        .dashboard-card {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            background: linear-gradient(to right, var(--accent-color), rgba(79, 70, 229, 0.8)) !important;
+            border-radius: 1rem 1rem 0 0 !important;
+            padding: 1.25rem;
+            border-bottom: none;
+        }
+
+        .card-header h5 {
+            margin: 0;
+            font-weight: 600;
+            color: white;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: rgba(79, 70, 229, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .announcement-card .card-header {
+            background: linear-gradient(to right, var(--warning-color), rgba(217, 119, 6, 0.8)) !important;
+        }
+
+        .info-group {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+    </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Resident Dashboard</a>
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-home me-2"></i>
+            Resident Dashboard
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/logout">Logout</a>
+                    <a class="nav-link" href="/logout">
+                        <i class="fas fa-sign-out-alt me-1"></i>
+                        Logout
+                    </a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
 
-<div class="container mt-5">
+<div class="container mt-4">
     <div class="row">
         <!-- Resident Info Section -->
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5>Resident Info</h5>
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-user me-2"></i>Resident Info</h5>
                 </div>
                 <div class="card-body">
-                    <p><strong>Name:</strong> <span th:text="${resident.name}"></span></p>
-                    <p><strong>Email:</strong> <span th:text="${resident.email}"></span></p>
-                    <p><strong>Phone:</strong> <span th:text="${resident.phone}"></span></p>
-                    <a href th:href="@{/resident/edit}" class="btn btn-primary">Edit Profile</a>
+                    <div class="info-group">
+                        <p><span class="info-label"><i class="fas fa-user me-2"></i>Name:</span>
+                            <span class="info-value" th:text="${resident.name}"></span>
+                        </p>
+                        <p><span class="info-label"><i class="fas fa-envelope me-2"></i>Email:</span>
+                            <span class="info-value" th:text="${resident.email}"></span>
+                        </p>
+                        <p><span class="info-label"><i class="fas fa-phone me-2"></i>Phone:</span>
+                            <span class="info-value" th:text="${resident.phone}"></span>
+                        </p>
+                    </div>
+                    <a href th:href="@{/resident/edit}" class="btn btn-primary w-100">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </a>
                 </div>
             </div>
         </div>
 
         <!-- Room Info Section -->
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h5>Assigned Rooms</h5>
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-door-open me-2"></i>Assigned Room</h5>
                 </div>
                 <div class="card-body">
-                    <div th:each="room : ${room}">
-                        <p><strong>Room ID:</strong> <span th:text="${room.id}"></span></p>
-                        <p><strong>Size:</strong> <span th:text="${room.size}"></span></p>
-                        <p><strong>Equipment:</strong> <span th:text="${room.equipments}"></span></p>
-                        <p><strong>Availability:</strong>
-                            <span th:text="${room.available ? 'Available' : 'Occupied'}"></span>
+                    <div th:each="room : ${room}" class="info-group">
+                        <p><span class="info-label"><i class="fas fa-hashtag me-2"></i>Room ID:</span>
+                            <span class="info-value" th:text="${room.id}"></span>
                         </p>
-                        <a th:href="@{/resident/incidents/report(roomId=${room.id})}" class="btn btn-primary">Report Incident</a>
-
-                        <hr>
+                        <p><span class="info-label"><i class="fas fa-expand me-2"></i>Size:</span>
+                            <span class="info-value" th:text="${room.size}"></span>
+                        </p>
+                        <p><span class="info-label"><i class="fas fa-tools me-2"></i>Equipment:</span>
+                            <span class="info-value" th:text="${room.equipments}"></span>
+                        </p>
+                        <p><span class="info-label"><i class="fas fa-check-circle me-2"></i>Availability:</span>
+                            <span class="info-value" th:text="${room.available ? 'Available' : 'Occupied'}"></span>
+                        </p>
+                        <div class="mt-3">
+                            <a th:href="@{/resident/incidents/report(roomId=${room.id})}" class="btn btn-primary me-2">
+                                <i class="fas fa-exclamation-circle me-2"></i>Report Incident
+                            </a>
+                            <a th:href="@{/resident/payments/{residentId}(residentId=${resident.id})}" class="btn btn-primary">
+                                <i class="fas fa-credit-card me-2"></i>View Payments
+                            </a>
+                        </div>
                     </div>
-                    <div th:if="${#lists.isEmpty(room)}" class="text-center">
-                        <p>No rooms assigned yet.</p>
+                    <div th:if="${#lists.isEmpty(room)}" class="empty-state">
+                        <i class="fas fa-home"></i>
+                        <p>No room assigned yet.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Additional Features -->
+    <!-- Announcements Section -->
     <div class="row mt-4">
         <div class="col-md-12">
-            <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h5>Announcements</h5>
+            <div class="dashboard-card announcement-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-bullhorn me-2"></i>Announcements</h5>
                 </div>
                 <div class="card-body">
-                    <p>No announcements at the moment. Stay tuned!</p>
+                    <div class="empty-state">
+                        <i class="fas fa-bell-slash"></i>
+                        <p>No announcements at the moment. Stay tuned!</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

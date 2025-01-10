@@ -2,35 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Add Room</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-5">
   <h1>Add Room</h1>
-  <form th:action="@{/admin/rooms/add}" method="post" th:object="${room}">
-    <div class="form-group">
-      <label for="size">Size:</label>
-      <input type="text" class="form-control" id="size" th:field="*{size}">
+  <form th:action="@{/admin/rooms/add}" th:object="${room}" method="post">
+    <div class="mb-3">
+      <label for="size" class="form-label">Size</label>
+      <input type="text" id="size" name="size" class="form-control" th:field="*{size}" required>
     </div>
-
-    <div class="form-group">
-      <label for="equipments">Equipments:</label>
-      <input type="text" class="form-control" id="equipments" th:field="*{equipments}">
+    <div class="mb-3">
+      <label for="equipments" class="form-label">Equipments</label>
+      <input type="text" id="equipments" name="equipments" class="form-control" th:field="*{equipments}">
     </div>
-
-    <div class="form-group">
-      <label for="available">Available:</label>
-      <input type="checkbox" class="form-check-input" id="available" th:field="*{available}">
-    </div>
-
-    <div class="form-group">
-      <label for="resident">Resident:</label>
-      <select class="form-control" id="resident" name="residentId">
-        <option th:each="resident : ${residents}" th:value="${resident.id}" th:text="${resident.name}"></option>
-      </select>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Add Room</button>
+    <button type="submit" class="btn btn-primary">Save</button>
   </form>
 </div>
 </body>

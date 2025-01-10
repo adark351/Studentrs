@@ -13,7 +13,7 @@ public class Incident {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "resident_id", nullable = false)
+    @JoinColumn(name = "resident_id", nullable = true)
     private Resident resident;
 
     @Enumerated(EnumType.STRING)

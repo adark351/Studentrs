@@ -16,7 +16,7 @@ public class Room {
     private boolean available;
 
 
-    @OneToOne(mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "room")
     private Resident resident; // Bidirectional mapping
     // Getters and setters
 

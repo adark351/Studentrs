@@ -7,4 +7,6 @@ import java.util.List;
 public interface RoomRepository extends JpaRepository<Room, Long> {
     long countByAvailable(boolean available);
     List<Room> findByResidentId(Long residentId);
+    long countByResidentIsNotNull();
+    List<Room> findAll();
 }

@@ -1,17 +1,22 @@
 package com.example.controller;
 
+import com.example.entity.Payment;
 import com.example.entity.Resident;
 import com.example.entity.Room;
+import com.example.service.PaymentService;
 import com.example.service.ResidentService;
 import com.example.service.RoomService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class ResidentController {
@@ -23,7 +28,8 @@ public class ResidentController {
 
     private final ResidentService residentService;
     private final RoomService roomService;
-
+    @Autowired
+     private  PaymentService paymentService;
     // Show the edit form with the current resident details
     @GetMapping("/resident/edit")
     public String showEditForm(Model model, Authentication authentication) {
@@ -55,10 +61,26 @@ public class ResidentController {
                 .orElseThrow(() -> new RuntimeException("Resident not found"));
 
         model.addAttribute("resident", resident);
-        long id = resident.getId();
-        List<Room> room = roomService.getRoomsByResidentId(id); // Fetch the room assigned to the resident
-        model.addAttribute("resident", resident);
-        model.addAttribute("room", room);
+
+        if (resident.getRoom() != null) {
+            Long roomId = resident.getRoom().getId();
+
+            // Fetch the room assigned to the resident
+            Optional<Room> room = roomService.getRoomById(roomId);
+            room.ifPresent(r -> model.addAttribute("room", r)); // If the room exists, add it to the model
+        } else {
+            model.addAttribute("error", "This resident has no room assigned.");
+        }
+
         return "resident-dashboard";
+    }
+
+
+    @GetMapping("/resident/payments/{residentId}")
+    public String listPaymentsByResident(@PathVariable Long residentId, Model model) {
+        List<Payment> payments = paymentService.getPaymentsByResident(residentId);
+
+        model.addAttribute("payments", payments);
+        return "payments/resident-list"; // Assuming there’s a Thymeleaf template named `resident-list.html`
     }
 }

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Payments</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5">Payments</h1>
+    <table class="table table-striped mt-3">
+        <thead class="thead-dark">
+        <tr>
+            <th>Resident</th>
+            <th>Amount</th>
+            <th>Due Date</th>
+            <th>Payment Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="payment : ${payments}">
+            <td th:text="${payment.resident.name}"></td>
+            <td th:text="${payment.amount}"></td>
+            <td th:text="${payment.dueDate}"></td>
+            <td th:text="${payment.paymentDate != null ? payment.paymentDate : 'N/A'}"></td>
+            <td th:text="${payment.status}"></td>
+            <td>
+                <form th:action="@{'/admin/payments/' + ${payment.id} + '/pay'}" method="post">
+                    <button type="submit" class="btn btn-primary" th:disabled="${payment.status == 'PAID'}">Mark as Paid</button>
+                </form>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+    <a href="/admin/payments/new" class="btn btn-success mt-3">Create New Payment</a>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
