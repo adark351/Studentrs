@@ -11,5 +11,6 @@ import java.util.List;
 public interface IncidentRepository extends JpaRepository<Incident, Long> {
     List<Incident> findByResidentId(Long residentId);
     void deleteByRoom(Room room);
+    List<Incident> findByDescriptionContainingIgnoreCase(String description);
 
 }

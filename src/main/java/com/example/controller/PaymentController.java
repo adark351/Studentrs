@@ -1,8 +1,10 @@
 package com.example.controller;
 
 import com.example.entity.Payment;
+import com.example.entity.Resident;
 import com.example.service.PaymentReceiptService;
 import com.example.service.PaymentService;
+import com.example.service.ResidentService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,6 +24,8 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 private final PaymentReceiptService paymentReceiptService;
+    @Autowired
+    private ResidentService residentService;
 
     public PaymentController(PaymentReceiptService paymentReceiptService) {
         this.paymentReceiptService = paymentReceiptService;
@@ -46,7 +50,9 @@ private final PaymentReceiptService paymentReceiptService;
 
     // Show form to create a new payment
     @GetMapping("/new")
-    public String showCreatePaymentForm() {
+    public String showCreatePaymentForm(Model model) {
+        List<Resident> residents = residentService.getAllResidents();
+        model.addAttribute("residents", residents);
         return "payments/create"; // Assuming there’s a Thymeleaf template named `create.html`
     }
 

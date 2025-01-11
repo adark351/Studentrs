@@ -34,4 +34,9 @@ public class IncidentService {
         incident.setTechnician(technician); // Assuming Incident entity has a `Technician` field
         incidentRepository.save(incident);
     }
+
+    public List<Incident> searchIncidents(String query) {
+        return incidentRepository.findByDescriptionContainingIgnoreCase(query);
+    }
+
 }

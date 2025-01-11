@@ -2,16 +2,152 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Create Payment</title>
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --dark-bg: #1a1a1a;
+      --darker-bg: #0f0f0f;
+      --border-color: #2d2d2d;
+      --text-color: #e0e0e0;
+      --input-bg: #2a2a2a;
+      --hover-color: #3a3a3a;
+    }
+
+    body {
+      background-color: var(--dark-bg);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+      background-color: var(--darker-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      color: var(--text-color);
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+      background-color: var(--input-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      border-radius: 8px;
+      padding: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      background-color: var(--input-bg);
+      border-color: #0d6efd;
+      color: var(--text-color);
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .form-control::placeholder {
+      color: #6c757d;
+    }
+
+    label {
+      color: var(--text-color);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .btn {
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: #0d6efd;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #0b5ed7;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background-color: var(--input-bg);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--hover-color);
+      transform: translateY(-1px);
+    }
+
+    /* Select2 Custom Styling */
+    .select2-container--default .select2-selection--single {
+      background-color: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      height: 48px;
+      padding: 0.5rem;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      color: var(--text-color);
+      line-height: 28px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 46px;
+    }
+
+    .select2-dropdown {
+      background-color: var(--input-bg);
+      border: 1px solid var(--border-color);
+    }
+
+    .select2-container--default .select2-results__option {
+      color: var(--text-color);
+      padding: 0.75rem;
+    }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+      background-color: #0d6efd;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      animation: fadeIn 0.5s ease-out;
+    }
+  </style>
 </head>
 <body>
-<div class="container mt-5">
-  <h1>Create Payment</h1>
+<div class="container">
+  <h1 class="page-title"><i class="fas fa-file-invoice-dollar me-2"></i>Create Payment</h1>
   <form action="/admin/payments" method="post">
     <div class="form-group">
       <label for="residentId">Resident ID:</label>
-      <input type="number" class="form-control" id="residentId" name="residentId" required>
+      <select id="residentId" name="residentId" class="form-control select2" required>
+        <option value="" disabled selected>Select Resident</option>
+        <option th:each="resident : ${residents}" th:value="${resident.id}" th:text="${resident.name}"></option>
+      </select>
     </div>
     <div class="form-group">
       <label for="dueDate">Due Date:</label>
@@ -21,14 +157,21 @@
       <label for="amount">Amount:</label>
       <input type="number" class="form-control" step="0.01" id="amount" name="amount" required>
     </div>
-    <button type="submit" class="btn btn-primary">Create Payment</button>
+    <button type="submit" class="btn btn-primary mt-2 w-100"><i class="fas fa-check me-2"></i>Create Payment</button>
   </form>
-  <a href="/admin/payments" class="btn btn-secondary mt-3">Back to Payments</a>
+  <a href="/admin/payments" class="btn btn-secondary mt-3 w-100"><i class="fas fa-arrow-left me-2"></i>Back to Payments</a>
 </div>
 
-<!-- Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#residentId').select2({
+      placeholder: "Select Resident",
+      allowClear: true,
+      theme: "classic"
+    });
+  });
+</script>
 </body>
 </html>

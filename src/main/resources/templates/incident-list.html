@@ -1,47 +1,240 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Incident List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --accent-color: #4f46e5;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-black: #000000;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .page-title {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .incident-table {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .table {
+            margin-bottom: 0;
+            color: var(--text-primary);
+        }
+
+        .table thead th {
+            background: var(--accent-color);
+            color: white;
+            font-weight: 600;
+            padding: 1rem;
+            border: none;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            border-color: var(--border-color);
+            vertical-align: middle;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .table-striped > tbody > tr:nth-of-type(odd) > * {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: rgba(79, 70, 229, 0.8);
+            transform: translateY(-2px);
+        }
+
+        /* Select2 Custom Styling */
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-container--default .select2-selection--single {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            height: 38px;
+            color: var(--text-primary);
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: var(--text-primary);
+            line-height: 36px;
+            padding-left: 12px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px;
+        }
+
+        .select2-dropdown {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 0.25rem;
+        }
+
+        .select2-container--default .select2-results__option {
+            padding: 8px 12px;
+            color: var(--text-primary);
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .select2-container--default .select2-results__option[aria-selected=true] {
+            background-color: rgba(79, 70, 229, 0.2);
+        }
+
+        /* Dropdown label */
+        .form-control {
+            color: var(--text-black);
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            display: inline-block;
+        }
+
+        .timestamp {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+    </style>
 </head>
 <body>
-<h1>Incidents</h1>
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-clipboard-list me-2"></i>
+            Incident List
+        </h1>
+    </div>
 
-<!-- Incident Table -->
-<table border="1">
-    <thead>
-    <tr>
-        <th>Resident</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Status</th>
-        <th>Reported At</th>
-        <th>Technician</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="incident : ${incidents}">
-        <td th:text="${incident.resident.name}"></td>
-        <td th:text="${incident.type}"></td>
-        <td th:text="${incident.description}"></td>
-        <td th:text="${incident.status}"></td>
-        <td th:text="${incident.reportedAt}"></td>
-        <td>
-            <!-- Dropdown to select a technician -->
-            <form th:action="@{/admin/assign-technician}" method="post">
-                <input type="hidden" name="incidentId" th:value="${incident.id}">
-                <select name="technicianId" required>
-                    <option value="" disabled selected>Select Technician</option>
-                    <option th:each="technician : ${technicians}"
-                            th:value="${technician.id}"
-                            th:text="${technician.name}">
-                    </option>
-                </select>
-                <button type="submit">Assign</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <div class="incident-table">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th><i class="fas fa-user me-2"></i>Resident</th>
+                <th><i class="fas fa-tag me-2"></i>Type</th>
+                <th><i class="fas fa-align-left me-2"></i>Description</th>
+                <th><i class="fas fa-info-circle me-2"></i>Status</th>
+                <th><i class="fas fa-calendar me-2"></i>Reported At</th>
+                <th><i class="fas fa-wrench me-2"></i>Technician</th>
+                <th><i class="fas fa-sliders me-2"></i>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="incident : ${incidents}">
+                <td th:text="${incident.resident.name}"></td>
+                <td th:text="${incident.type}"></td>
+                <td th:text="${incident.description}"></td>
+
+                <!-- Status Badge -->
+                <td>
+                    <span class="status-badge"
+                          th:style="${'background-color: ' +
+                          (incident.status == 'PENDING' ? '#d97706' :
+                           incident.status == 'IN_PROGRESS' ? '#4f46e5' :
+                           '#059669')}"
+                          th:text="${incident.status}"></span>
+                </td>
+
+                <!-- Reported At Timestamp -->
+                <td>
+                    <span class="timestamp" th:text="${#temporals.format(incident.reportedAt, 'MMM dd, yyyy HH:mm')}"></span>
+                </td>
+
+                <!-- Technician -->
+                <td>
+                    <span th:text="${incident.technician != null ? incident.technician.name : 'No Technician Assigned'}"
+                          class="text-white"></span>
+                </td>
+
+                <!-- Technician Assignment Form -->
+                <td>
+                    <div class="form-group">
+                        <form th:action="@{/admin/assign-technician}" method="post">
+                            <input type="hidden" name="incidentId" th:value="${incident.id}">
+                            <select name="technicianId" class="form-control select2" required>
+                                <option value="" disabled selected>Select Technician</option>
+                                <option th:each="technician : ${technicians}"
+                                        th:value="${technician.id}"
+                                        th:text="${technician.name}">
+                                </option>
+                            </select>
+                            <button type="submit" class="btn btn-primary mt-2 w-100">
+                                <i class="fas fa-user-plus me-2"></i>Assign
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Select Technician",
+            allowClear: true,
+            theme: "classic",
+            dropdownParent: $('body')
+        });
+    });
+</script>
 </body>
 </html>

@@ -9,4 +9,5 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     List<Room> findByResidentId(Long residentId);
     long countByResidentIsNotNull();
     List<Room> findAll();
+    List<Room> findBySizeContainingIgnoreCaseOrEquipmentsContainingIgnoreCase(String size, String equipments);
 }

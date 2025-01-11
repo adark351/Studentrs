@@ -35,6 +35,9 @@ public class RoomService {
     public long getAvailableRoomsCount() {
         return roomRepository.countByAvailable(true);
     }
+    public List<Room> searchRooms(String query) {
+        return roomRepository.findBySizeContainingIgnoreCaseOrEquipmentsContainingIgnoreCase(query, query);
+    }
 
 
     // Add a new room

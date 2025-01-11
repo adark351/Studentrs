@@ -137,5 +137,8 @@ public class ResidentService {
 
         return residentRepository.save(resident);
     }
+    public List<Resident> searchResidents(String query) {
+        return residentRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query);
+    }
     }
 
