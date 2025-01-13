@@ -8,146 +8,207 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --bg-primary: #1a1a1a;
-            --bg-secondary: #2d2d2d;
-            --accent-color: #4f46e5;
-            --text-primary: #ffffff;
-            --text-secondary: #a0aec0;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --text-black: #000000;
-        }
-
         body {
-            background-color: var(--bg-primary);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(to right, #1e262f, #2c3e50);
+            color: #f8fafc;
             min-height: 100vh;
             padding: 2rem 0;
+        }
+
+        .container {
+            max-width: 90%;
+            margin: 0 auto;
         }
 
         .page-header {
             margin-bottom: 2rem;
             padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .page-title {
-            color: var(--text-primary);
+            color: #f8fafc;
             font-weight: 700;
             font-size: 2rem;
             margin: 0;
         }
 
         .incident-table {
-            background: var(--bg-secondary);
-            border-radius: 1rem;
-            overflow: hidden;
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            overflow-x: auto;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .table {
             margin-bottom: 0;
-            color: var(--text-primary);
+            color: #f8fafc;
+            min-width: 1200px;
         }
 
         .table thead th {
-            background: var(--accent-color);
-            color: white;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: #ffffff;
             font-weight: 600;
-            padding: 1rem;
+            padding: 1.25rem 1rem;
             border: none;
+            white-space: nowrap;
         }
 
         .table tbody td {
-            padding: 1rem;
-            border-color: var(--border-color);
+            padding: 1.25rem 1rem;
+            border-color: rgba(255, 255, 255, 0.1);
             vertical-align: middle;
-            background-color: var(--bg-secondary);
-            color: var(--text-primary);
+            background-color: transparent;
+            color: #f8fafc;
         }
 
         .table-striped > tbody > tr:nth-of-type(odd) > * {
             background-color: rgba(255, 255, 255, 0.02);
+            color: #f8fafc;
+        }
+
+        /* Updated button styles */
+        .btn {
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-width: 120px;
         }
 
         .btn-primary {
-            background: var(--accent-color);
+            background: linear-gradient(135deg, #3498db, #2980b9);
             border: none;
-            border-radius: 0.5rem;
-            padding: 0.5rem 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background: rgba(79, 70, 229, 0.8);
-            transform: translateY(-2px);
-        }
-
-        /* Select2 Custom Styling */
-        .select2-container {
-            width: 100% !important;
-        }
-
-        .select2-container--default .select2-selection--single {
-            background-color: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            height: 38px;
-            color: var(--text-primary);
-        }
-
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            color: var(--text-primary);
-            line-height: 36px;
-            padding-left: 12px;
-        }
-
-        .select2-container--default .select2-selection--single .select2-selection__arrow {
-            height: 36px;
-        }
-
-        .select2-dropdown {
-            background-color: var(--bg-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .select2-container--default .select2-search--dropdown .select2-search__field {
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            border-radius: 0.25rem;
-        }
-
-        .select2-container--default .select2-results__option {
-            padding: 8px 12px;
-            color: var(--text-primary);
-        }
-
-        .select2-container--default .select2-results__option--highlighted[aria-selected] {
-            background-color: var(--accent-color);
             color: white;
         }
 
-        .select2-container--default .select2-results__option[aria-selected=true] {
-            background-color: rgba(79, 70, 229, 0.2);
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, #2471a3);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(41, 128, 185, 0.2);
         }
 
-        /* Dropdown label */
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            border: none;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #27ae60, #219a52);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(46, 204, 113, 0.2);
+        }
+
         .form-control {
-            color: var(--text-black);
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            height: auto;
+        }
+
+        .form-control:focus {
+            background-color: rgba(15, 23, 42, 0.8);
+            border-color: #64748b;
+            color: #f8fafc;
+            box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2);
+        }
+
+        /* Updated Select2 styles */
+        .select2-container--default .select2-selection--single {
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            height: 38px;
+            color: #f8fafc;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #f8fafc;
+            line-height: 38px;
+            padding-left: 0.75rem;
         }
 
         .status-badge {
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 2rem;
             font-weight: 500;
             font-size: 0.875rem;
             display: inline-block;
+            color: white;
+            white-space: nowrap;
         }
 
         .timestamp {
-            color: var(--text-secondary);
+            color: #94a3b8;
             font-size: 0.875rem;
+            white-space: nowrap;
+        }
+
+        .actions-cell {
+            min-width: 280px;
+            padding: 1rem !important;
+        }
+
+        .description-cell {
+            max-width: 250px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .action-separator {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 0.75rem 0;
+        }
+
+        /* Action buttons container */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .action-form {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        @media (max-width: 1400px) {
+            .container {
+                max-width: 95%;
+            }
+        }
+
+        .incident-table::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .incident-table::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .incident-table::-webkit-scrollbar-thumb {
+            background: rgba(52, 152, 219, 0.5);
+            border-radius: 4px;
+        }
+
+        .incident-table::-webkit-scrollbar-thumb:hover {
+            background: rgba(52, 152, 219, 0.7);
         }
     </style>
 </head>
@@ -170,40 +231,33 @@
                 <th><i class="fas fa-info-circle me-2"></i>Status</th>
                 <th><i class="fas fa-calendar me-2"></i>Reported At</th>
                 <th><i class="fas fa-wrench me-2"></i>Technician</th>
-                <th><i class="fas fa-sliders me-2"></i>Action</th>
+                <th><i class="fas fa-sliders me-2"></i>Actions</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="incident : ${incidents}">
                 <td th:text="${incident.resident.name}"></td>
                 <td th:text="${incident.type}"></td>
-                <td th:text="${incident.description}"></td>
-
-                <!-- Status Badge -->
+                <td class="description-cell" th:text="${incident.description}" th:title="${incident.description}"></td>
                 <td>
                     <span class="status-badge"
                           th:style="${'background-color: ' +
                           (incident.status == 'PENDING' ? '#d97706' :
-                           incident.status == 'IN_PROGRESS' ? '#4f46e5' :
-                           '#059669')}"
+                           incident.status == 'IN_PROGRESS' ? '#3498db' :
+                           '#27ae60')}"
                           th:text="${incident.status}"></span>
                 </td>
-
-                <!-- Reported At Timestamp -->
                 <td>
                     <span class="timestamp" th:text="${#temporals.format(incident.reportedAt, 'MMM dd, yyyy HH:mm')}"></span>
                 </td>
-
-                <!-- Technician -->
                 <td>
                     <span th:text="${incident.technician != null ? incident.technician.name : 'No Technician Assigned'}"
                           class="text-white"></span>
                 </td>
-
-                <!-- Technician Assignment Form -->
-                <td>
-                    <div class="form-group">
-                        <form th:action="@{/admin/assign-technician}" method="post">
+                <td class="actions-cell">
+                    <div class="action-buttons">
+                        <!-- Assign Technician -->
+                        <form th:action="@{/admin/assign-technician}" method="post" class="action-form">
                             <input type="hidden" name="incidentId" th:value="${incident.id}">
                             <select name="technicianId" class="form-control select2" required>
                                 <option value="" disabled selected>Select Technician</option>
@@ -212,8 +266,23 @@
                                         th:text="${technician.name}">
                                 </option>
                             </select>
-                            <button type="submit" class="btn btn-primary mt-2 w-100">
-                                <i class="fas fa-user-plus me-2"></i>Assign
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-user-plus"></i>
+                                Assign
+                            </button>
+                        </form>
+
+                        <!-- Update Status -->
+                        <form th:action="@{/resident/incidents/update-incident-status}" method="post" class="action-form">
+                            <input type="hidden" name="incidentId" th:value="${incident.id}">
+                            <select name="status" class="form-control" required>
+                                <option th:value="PENDING" th:selected="${incident.status == 'PENDING'}">PENDING</option>
+                                <option th:value="IN_PROGRESS" th:selected="${incident.status == 'IN_PROGRESS'}">IN PROGRESS</option>
+                                <option th:value="RESOLVED" th:selected="${incident.status == 'RESOLVED'}">RESOLVED</option>
+                            </select>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-sync-alt"></i>
+                                Update
                             </button>
                         </form>
                     </div>

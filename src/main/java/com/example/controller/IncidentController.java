@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/resident/incidents")
@@ -66,5 +67,17 @@ public class IncidentController {
         return "redirect:/resident/dashboard";
     }
 
+    @PostMapping("/update-incident-status")
+    public String updateIncidentStatus(@RequestParam("incidentId") Long incidentId, @RequestParam("status") String status) {
+        // Fetch the incident by ID
+        Incident incident = incidentService.getIncidentById(incidentId);
+
+        // Update the status
+        incident.setStatus(IncidentStatus.valueOf(status));
+        incidentService.saveIncident(incident);
+
+        // Redirect back to the incidents page
+        return "redirect:/admin/incidents";
+    }
 
 }

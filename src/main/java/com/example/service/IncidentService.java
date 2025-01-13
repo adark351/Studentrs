@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class IncidentService {
@@ -17,6 +18,9 @@ public class IncidentService {
 
     public void saveIncident(Incident incident) {
         incidentRepository.save(incident);
+    }
+    public Incident getIncidentById(Long id) {
+        return incidentRepository.getById(id);
     }
     public List<Incident> getAllIncidents() {
         return incidentRepository.findAll();

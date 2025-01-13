@@ -66,7 +66,7 @@ public class RoomController {
     }
     @GetMapping("/edit/{id}")
     public String showEditRoomForm(@PathVariable Long id, Model model) {
-        Optional<Room> room = roomService.getRoomById(id);  // Retrieve the room by id
+        Room room=roomService.getRoomById(id).orElseThrow(() -> new RuntimeException("Room not found"));
         List<Resident> residents = residentService.getAllResidents();  // Get all residents
         model.addAttribute("room", room);  // Add the room object to the model
         model.addAttribute("residents", residents);  // Add the list of residents to the model

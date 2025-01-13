@@ -19,4 +19,7 @@ public interface IncidentRepository extends JpaRepository<Incident, Long> {
 
     @Query("SELECT i FROM Incident i WHERE LOWER(i.type) LIKE LOWER(CONCAT('%', :type, '%'))")
     List<Incident> findByType(@Param("type") String type);
+
+    @Override
+    Incident getById(Long aLong);
 }

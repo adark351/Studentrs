@@ -5,49 +5,119 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(to right, #1e262f, #2c3e50);
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: rgba(26, 32, 44, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         h1 {
-            margin-top: 50px;
+            color: #f1f5f9;
+            font-size: 1.875rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
         }
 
-        form {
-            text-align: left;
+        .form-group label {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+        }
+
+        .form-control:focus {
+            background-color: rgba(15, 23, 42, 0.8);
+            border-color: #64748b;
+            color: #f1f5f9;
+            box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2);
+        }
+
+        .btn-primary {
+
+            background: linear-gradient(135deg, #34495e, #2980b9);
+            border: none;
+            padding: 0.75rem 1rem;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, #2471a3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(41, 128, 185, 0.2);
         }
 
         .alert {
-            margin-top: 10px;
+            border: none;
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .alert-danger {
+            background-color: rgba(220, 38, 38, 0.2);
+            color: #fecaca;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .alert-success {
+            background-color: rgba(22, 163, 74, 0.2);
+            color: #bbf7d0;
+            border: 1px solid rgba(22, 163, 74, 0.3);
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1 class="text-center"> Login</h1>
+    <div class="login-card">
+        <h1 class="text-center">Login</h1>
 
-    <form th:action="@{/login}" method="post" class="mx-auto mt-5" style="max-width: 300px;">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" class="form-control"/>
-        </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" class="form-control"/>
-        </div>
-        <div>
-            <button type="submit" class="btn btn-primary btn-block">Login</button>
-        </div>
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" autocomplete="username"/>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" autocomplete="current-password"/>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </div>
 
-        <!-- Error message display if login fails -->
-        <div th:if="${param.error}" class="alert alert-danger mt-3">
-            Invalid username or password.
-        </div>
+            <div th:if="${param.error}" class="alert alert-danger mt-3">
+                Invalid username or password.
+            </div>
 
-        <!-- Success message display if logged out -->
-        <div th:if="${param.logout}" class="alert alert-success mt-3">
-            You have been logged out.
-        </div>
-    </form>
+            <div th:if="${param.logout}" class="alert alert-success mt-3">
+                You have been logged out.
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>

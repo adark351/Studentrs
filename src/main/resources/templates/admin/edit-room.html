@@ -1,36 +1,123 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Edit Room</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(to right, #1e262f, #2c3e50);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .container {
+            max-width: 600px;
+        }
+
+        .edit-card {
+            background: rgba(26, 32, 44, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            color: #f1f5f9;
+            font-size: 1.875rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+        }
+
+        .form-control:focus {
+            background-color: rgba(15, 23, 42, 0.8);
+            border-color: #64748b;
+            color: #f1f5f9;
+            box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2);
+        }
+
+        .form-check-input {
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-top: 0.25rem;
+        }
+
+        .form-check-input:checked {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+
+        .form-check-input:focus {
+            border-color: #64748b;
+            box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, #2471a3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(41, 128, 185, 0.2);
+        }
+
+        .mb-3 {
+            margin-bottom: 1.5rem !important;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-5">
-    <h1>Edit Room</h1>
-    <form th:action="@{/admin/rooms/update}" th:object="${room}" method="post">
-        <div class="mb-3">
-            <input type="hidden" th:field="*{id}" />  <!-- This will hold the room ID -->
+<div class="container">
+    <div class="edit-card">
+        <h1>Edit Room</h1>
+        <form th:action="@{/admin/rooms/update}" th:object="${room}" method="post">
+            <div class="mb-3">
+                <input type="hidden" th:field="*{id}" />
 
-            <label for="size" class="form-label">Size</label>
-            <input type="text" id="size" th:field="*{size}" class="form-control">
-        </div>
-        <div class="mb-3">
-            <label for="equipments" class="form-label">Equipments</label>
-            <input type="text" id="equipments" th:field="*{equipments}" class="form-control">
-        </div>
-        <div class="mb-3">
-            <label for="available" class="form-label">Available</label>
-            <input type="checkbox" id="available" th:field="*{available}" class="form-check-input">
-        </div>
-        <div class="mb-3">
-            <label for="resident" class="form-label">Assign Resident</label>
-            <select id="resident" th:field="*{resident.id}" class="form-select">
-                <option value="" th:text="'Select Resident'">Select Resident</option>
-                <option th:each="resident : ${residents}" th:value="${resident.id}" th:text="${resident.name}"></option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-    </form>
+                <label for="size" class="form-label">Size</label>
+                <input type="text" id="size" th:field="*{size}" class="form-control" placeholder="Enter room size">
+            </div>
+            <div class="mb-3">
+                <label for="equipments" class="form-label">Equipments</label>
+                <input type="text" id="equipments" th:field="*{equipments}" class="form-control" placeholder="Enter equipment list">
+            </div>
+            <div class="mb-3">
+                <div class="form-check">
+                    <input type="checkbox" id="available" th:field="*{available}" class="form-check-input">
+                    <label for="available" class="form-label" style="margin-left: 0.5rem;">Available</label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>
