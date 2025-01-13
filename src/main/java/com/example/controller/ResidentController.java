@@ -38,8 +38,9 @@ public class ResidentController {
                 .orElseThrow(() -> new RuntimeException("Resident not found"));
 
         model.addAttribute("resident", resident);
-        return "update-resident";  // Name of the Thymeleaf template for updating info
+        return "resident/update-resident";  // Name of the Thymeleaf template for updating info
     }
+
 
     // Handle the update request and save the changes
     @PostMapping("/resident/update")
@@ -72,7 +73,7 @@ public class ResidentController {
             model.addAttribute("error", "This resident has no room assigned.");
         }
 
-        return "resident-dashboard";
+        return "resident/resident-dashboard";
     }
 
 

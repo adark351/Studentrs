@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Search Results</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    :root {
+      --bg-dark: #232222;
+      --bg-darker: #2d2d2d;
+      --text-primary: #ffffff;
+      --text-secondary: #9ca3af;
+      --border-color: #333333;
+      --accent-color: #e5e5e5;
+      --accent-muted: rgba(229, 229, 229, 0.05);
+      --danger: #dc2626;
+      --success: #22c55e;
+    }
+
+    body {
+      background: linear-gradient(to bottom, var(--bg-dark), #131313);
+      color: var(--text-primary);
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+    }
+
+    .container {
+      padding: 2.5rem 1.5rem;
+      max-width: 1200px;
+    }
+
+    h1 {
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: var(--accent-color);
+      border-radius: 2px;
+    }
+
+    .search-result {
+      background: var(--bg-darker);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2),
+      0 2px 4px -1px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .search-result:empty {
+      display: none;
+    }
+
+    h2 {
+      color: var(--accent-color);
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h2::before {
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background: var(--accent-color);
+      border-radius: 50%;
+      opacity: 0.8;
+    }
+
+    .table {
+      margin: 0;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .table thead th {
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      font-weight: 600;
+      padding: 1rem;
+      border-bottom: 2px solid var(--border-color);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .table td {
+      padding: 1rem;
+      border-color: var(--border-color);
+      vertical-align: middle;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: var(--accent-muted);
+    }
+
+    .table-striped tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+      transition: background-color 0.2s ease;
+    }
+
+    .alert {
+      background: var(--bg-darker);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .alert::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .alert-danger {
+      background: rgba(220, 38, 38, 0.1);
+      border-left: 4px solid var(--danger);
+    }
+
+    .alert-danger::before {
+      background: var(--danger);
+    }
+
+    .alert-info {
+      background: rgba(229, 229, 229, 0.1);
+      border-left: 4px solid var(--accent-color);
+    }
+
+    .alert-info::before {
+      background: var(--accent-color);
+    }
+
+    .status-available {
+      color: var(--success);
+      font-weight: 500;
+    }
+
+    .status-unavailable {
+      color: var(--danger);
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem 1rem;
+      }
+
+      .table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .search-result {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Search Results</h1>
+
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+  <div th:if="${message}" class="alert alert-info" th:text="${message}"></div>
+
+  <div th:if="${not #lists.isEmpty(rooms)}" class="search-result">
+    <h2>Rooms</h2>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Size</th>
+        <th>Equipments</th>
+        <th>Available</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="room : ${rooms}">
+        <td th:text="${room.id}"></td>
+        <td th:text="${room.size}"></td>
+        <td th:text="${room.equipments}"></td>
+        <td>
+          <span th:class="${room.available ? 'status-available' : 'status-unavailable'}"
+                th:text="${room.available ? 'Available' : 'Unavailable'}">
+          </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div th:if="${not #lists.isEmpty(residents)}" class="search-result">
+    <h2>Residents</h2>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="resident : ${residents}">
+        <td th:text="${resident.id}"></td>
+        <td th:text="${resident.name}"></td>
+        <td th:text="${resident.email}"></td>
+        <td th:text="${resident.phone}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div th:if="${not #lists.isEmpty(incidents)}" class="search-result">
+    <h2>Incidents</h2>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="incident : ${incidents}">
+        <td th:text="${incident.id}"></td>
+        <td th:text="${incident.description}"></td>
+        <td th:text="${incident.type}"></td>
+        <td th:text="${incident.status}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

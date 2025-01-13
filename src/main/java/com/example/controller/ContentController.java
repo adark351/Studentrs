@@ -9,7 +9,6 @@ import com.example.service.IncidentService;
 import com.example.service.ResidentService;
 import com.example.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +34,10 @@ public class ContentController {
     }
 
     private final TechnicianRepository technicianRepository;
-
+@GetMapping
+public String home() {
+    return "index";
+}
     // This method handles requests for the login page
     @GetMapping("/login")
     public String login() {
@@ -45,22 +47,14 @@ public class ContentController {
     // This method handles requests for the admin dashboard page
     @GetMapping("/admin")
     public String adminDashboard() {
-        return "adminDashboard";  // This should match the name of your admin dashboard view (adminDashboard.html)
+        return "admin/adminDashboard";  // This should match the name of your admin dashboard view (adminDashboard.html)
     }
 
 
-    @GetMapping("/test")
-        public String dtest () {
-            return "search-form";
-        }
 
 
 
 
-    @GetMapping("/admin/layout")
-    public String adminLayout() {
-        return "admin/admin-layout";  // This should match the name of your admin dashboard view (adminDashboard.html)
-    }
 
 
     @Autowired
@@ -73,7 +67,7 @@ public class ContentController {
         List<Technician> technicians = technicianRepository.findAll(); // Fetch available technicians
         model.addAttribute("incidents", incidents);
         model.addAttribute("technicians", technicians);
-        return "incident-list";
+        return "incident/incident-list";
     }
 
     @PostMapping("admin/assign-technician")
@@ -82,28 +76,50 @@ public class ContentController {
         return "redirect:/admin/incidents"; // Redirect back to the incident list
     }
 
-
     @GetMapping("/search")
     public String search(@RequestParam("query") String query, Model model) {
-        // Search for rooms, residents, and ongoing requests (incidents)
-        model.addAttribute("rooms", roomService.searchRooms(query));
-        model.addAttribute("residents", residentService.searchResidents(query));
-        model.addAttribute("incidents", incidentService.searchIncidents(query));
-        return "search-results"; // The Thymeleaf template for displaying search results
+        if (query == null || query.trim().isEmpty()) {
+            model.addAttribute("error", "Search query cannot be empty.");
+            return "admin/search-results"; // Return the search results page with an error message
+        }
+
+        // Search for rooms, residents, and incidents
+        List<Room> rooms = roomService.searchRooms(query);
+        List<Resident> residents = residentService.searchResidents(query);
+        List<Incident> incidents = new ArrayList<>();
+
+        // Include incident description, type, and status in search
+        incidents.addAll(incidentService.searchIncidents(query)); // Search by description
+        incidents.addAll(incidentService.searchByType(query)); // Search by type
+        incidents.addAll(incidentService.searchByStatus(query)); // Search by status
+
+        // Remove duplicates from the incidents list (if any)
+        incidents = incidents.stream().distinct().collect(Collectors.toList());
+
+        // Add results to the model
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("residents", residents);
+        model.addAttribute("incidents", incidents);
+
+        // If no results, add a message
+        if (rooms.isEmpty() && residents.isEmpty() && incidents.isEmpty()) {
+            model.addAttribute("message", "No results found for the query: " + query);
+        }
+
+        return "admin/search-results"; // The Thymeleaf template for displaying search results
     }
+
     @GetMapping("/autocomplete")
     @ResponseBody
     public List<String> autocomplete(@RequestParam("term") String term) {
-        // Ensure the term is not null or empty
         if (term == null || term.trim().isEmpty()) {
-            return Collections.emptyList(); // Return an empty list if the term is invalid
+            return Collections.emptyList();
         }
 
-        // Fetch matching rooms, residents, incidents, and incident types
         List<String> rooms = roomService.searchRooms(term)
                 .stream()
                 .map(Room::getEquipments)
-                .filter(Objects::nonNull) // Ensure no null values
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         List<String> residents = residentService.searchResidents(term)
@@ -112,27 +128,32 @@ public class ContentController {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        List<String> incidents = incidentService.searchIncidents(term)
+        List<String> incidentDescriptions = incidentService.searchIncidents(term)
                 .stream()
                 .map(Incident::getDescription)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        List<String> incidentTypes = incidentService.searchIncidents(term)
+        List<String> incidentTypes = incidentService.searchByType(term)
                 .stream()
-                .map(incident -> incident.getType() != null ? incident.getType().toString() : null) // Ensure `IncidentType` is not null
-                .filter(Objects::nonNull)
+                .map(incident -> incident.getType().name()) // Assuming IncidentType is an Enum
                 .collect(Collectors.toList());
 
-        // Combine results into a single list
+        List<String> incidentStatuses = incidentService.searchByStatus(term)
+                .stream()
+                .map(incident -> incident.getStatus().name()) // Assuming IncidentStatus is an Enum
+                .collect(Collectors.toList());
+
         List<String> suggestions = new ArrayList<>();
         suggestions.addAll(rooms);
         suggestions.addAll(residents);
-        suggestions.addAll(incidents);
+        suggestions.addAll(incidentDescriptions);
         suggestions.addAll(incidentTypes);
+        suggestions.addAll(incidentStatuses);
 
         return suggestions;
     }
+
 
 
 

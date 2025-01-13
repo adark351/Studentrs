@@ -38,5 +38,11 @@ public class IncidentService {
     public List<Incident> searchIncidents(String query) {
         return incidentRepository.findByDescriptionContainingIgnoreCase(query);
     }
+    public List<Incident> searchByStatus(String status) {
+        return incidentRepository.findByStatus(status);
+    }
 
+    public List<Incident> searchByType(String type) {
+        return incidentRepository.findByType(type);
+    }
 }

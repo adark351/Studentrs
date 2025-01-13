@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.service.IncidentService;
+import com.example.entity.Resident;
 import com.example.service.ResidentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,14 +11,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/residents")
 public class AdminResidentController {
 
-    @Autowired
-    private ResidentService residentService;
+    private final ResidentService residentService;
 
-    public AdminResidentController(IncidentService incidentService) {
-        this.incidentService = incidentService;
+    public AdminResidentController(ResidentService residentService) {
+        this.residentService = residentService;
     }
-
-    private final IncidentService incidentService;
 
     /**
      * Display the list of all residents.
@@ -26,7 +23,7 @@ public class AdminResidentController {
     @GetMapping
     public String listResidents(Model model) {
         model.addAttribute("residents", residentService.getAllResidents());
-        return "listResident";  // Name of the Thymeleaf template
+        return "admin/listResident";  // Name of the Thymeleaf template
     }
 
     /**
@@ -37,6 +34,12 @@ public class AdminResidentController {
         residentService.deleteResident(id);
         return "redirect:/admin/residents";  // Redirect to the updated list of residents
     }
-
+    @GetMapping("/residents/edit/{id}")
+    public String showEditForm(Model model, @PathVariable Long id) {
+        Resident resident = residentService.getResidentById(id)
+                .orElseThrow(() -> new RuntimeException("Resident not found"));
+        model.addAttribute("resident", resident);
+        return "resident/update-resident";  // Name of the Thymeleaf template for updating info
+    }
 
 }

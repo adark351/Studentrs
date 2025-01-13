@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 
 @Controller
@@ -40,7 +39,7 @@ public class IncidentController {
         model.addAttribute("incident", incident);
         model.addAttribute("room", room);
 
-        return "report-incident"; // The form template for reporting an incident
+        return "incident/report-incident"; // The form template for reporting an incident
     }
 
     // Process the "Report Incident" form submission
