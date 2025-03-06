@@ -33,6 +33,4 @@ public class Incident {
     private Room room;
     @ManyToOne
     private Technician technician;
-    // Getters and setters
-    // ...
 }

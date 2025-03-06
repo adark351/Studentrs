@@ -11,4 +11,5 @@ public interface ResidentRepository extends JpaRepository<Resident, Long> {
     Optional<Resident> findByEmail(String email);
     List<Resident> findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String name, String email);
 
+    boolean existsByEmail(String email);
 }

@@ -49,4 +49,17 @@ public class IncidentService {
     public List<Incident> searchByType(String type) {
         return incidentRepository.findByType(type);
     }
+
+    public List<Incident> filterIncidents(Long residentId, Long roomId) {
+        if (residentId != null && roomId != null) {
+            return incidentRepository.findByResidentIdAndRoomId(residentId, roomId);
+        } else if (residentId != null) {
+            return incidentRepository.findByResidentId(residentId);
+        } else if (roomId != null) {
+            return incidentRepository.findByRoomId(roomId);
+        } else {
+            return incidentRepository.findAll();
+        }
+    }
+
 }

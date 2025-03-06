@@ -12,11 +12,17 @@ public class EmailService {
     private JavaMailSender emailSender;
 
     public void sendPaymentReminder(String toEmail, String subject, String text) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("your-email@gmail.com");
-        message.setTo(toEmail);
-        message.setSubject(subject);
-        message.setText(text);
-        emailSender.send(message);
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("aminebaquouch32@gmail.com");
+            message.setTo(toEmail);
+            message.setSubject(subject);
+            message.setText(text);
+            emailSender.send(message);
+            System.out.println("Reminder sent to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("Error sending email to: " + toEmail);
+            e.printStackTrace();
+        }
     }
 }

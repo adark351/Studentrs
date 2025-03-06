@@ -21,25 +21,30 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // First, check the Admin table
+        System.out.println("Attempting to authenticate user: " + username);
+
+        // Check Admin table
         Admin admin = adminRepository.findByUsername(username).orElse(null);
         if (admin != null) {
+            System.out.println("Admin found: " + admin.getUsername());
+            System.out.println("Stored Password: " + admin.getPassword()); // Debug password
             return org.springframework.security.core.userdetails.User.withUsername(admin.getUsername())
                     .password(admin.getPassword())  // Password remains encoded
                     .roles("ADMIN")
                     .build();
         }
 
-        // Next, check the Resident table using email
+        // Check Resident table
         Resident resident = residentRepository.findByEmail(username).orElse(null);
         if (resident != null) {
+            System.out.println("Resident found: " + resident.getEmail());
             return org.springframework.security.core.userdetails.User.withUsername(resident.getEmail())
                     .password(resident.getPassword())  // Password remains encoded
                     .roles("RESIDENT")
                     .build();
         }
 
-        // If neither found, throw exception
+        System.out.println("User not found: " + username);
         throw new UsernameNotFoundException("User not found");
     }
 

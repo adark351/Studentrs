@@ -5,8 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.List;
-
 @Entity
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true) // Exclude fields not explicitly included

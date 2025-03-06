@@ -6,7 +6,6 @@ import lombok.Data;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 @Data
 @Entity
 public class Payment {

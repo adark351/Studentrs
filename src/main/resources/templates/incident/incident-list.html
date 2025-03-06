@@ -9,13 +9,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(to right, #1e262f, #2c3e50);
             color: #f8fafc;
-            min-height: 100vh;
             padding: 2rem 0;
         }
-
+        .filter-bar {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .filter-bar select {
+            max-width: 300px;
+        }
+        .filter-button {
+            margin-left: auto;
+        }
         .container {
             max-width: 90%;
             margin: 0 auto;
@@ -141,7 +150,68 @@
             line-height: 38px;
             padding-left: 0.75rem;
         }
+.select2-container--open{
+    color : #070707;
+    background-color: #1e262f;
+}
 
+
+        /* Select2 dropdown styling updates */
+        .select2-container--default .select2-selection--single {
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            height: 38px;
+            color: #f8fafc;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #f8fafc;
+            line-height: 38px;
+            padding-left: 0.75rem;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow b {
+            border-color: #f8fafc transparent transparent transparent;
+        }
+
+        /* Dropdown panel styling */
+        .select2-container--default .select2-dropdown {
+            background-color: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            background-color: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
+            border-radius: 4px;
+        }
+
+        .select2-container--default .select2-results__option {
+            color: #f8fafc;
+            padding: 8px 12px;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .select2-container--default .select2-results__option[aria-selected=true] {
+            background-color: rgba(52, 152, 219, 0.3);
+        }
+
+        /* Placeholder color */
+        .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: #94a3b8;
+        }
         .status-badge {
             padding: 0.4rem 0.8rem;
             border-radius: 2rem;
@@ -221,6 +291,41 @@
         </h1>
     </div>
 
+    <!-- Filter Bar -->
+    <form class="filter-bar" th:action="@{/admin/incidents/filter}" method="get">
+        <!-- Resident Filter -->
+        <div>
+            <label for="residentFilter" class="form-label">Filter by Resident</label>
+            <select id="residentFilter" name="residentId" class="form-control select2" th:attr="data-placeholder='Select Resident'">
+                <option value="">All Residents</option>
+                <option th:each="resident : ${residents}"
+                        th:value="${resident.id}"
+                        th:text="${resident.name}"
+                        th:selected="${resident.id == param.residentId}"></option>
+            </select>
+        </div>
+
+        <!-- Room Filter -->
+        <div>
+            <label for="roomFilter" class="form-label">Filter by Room</label>
+            <select id="roomFilter" name="roomId" class="form-control select2" th:attr="data-placeholder='Select Room'">
+                <option value="">All Rooms</option>
+                <option th:each="room : ${rooms}"
+                        th:value="${room.id}"
+                        th:text="${room.id}"
+                        th:selected="${room.id == param.roomId}"></option>
+            </select>
+        </div>
+
+        <!-- Filter Button -->
+        <div class="filter-button">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+        </div>
+    </form>
+
+    <!-- Incident Table -->
     <div class="incident-table">
         <table class="table table-striped">
             <thead>
@@ -238,7 +343,7 @@
             <tr th:each="incident : ${incidents}">
                 <td th:text="${incident.resident.name}"></td>
                 <td th:text="${incident.type}"></td>
-                <td class="description-cell" th:text="${incident.description}" th:title="${incident.description}"></td>
+                <td th:text="${incident.description}"></td>
                 <td>
                     <span class="status-badge"
                           th:style="${'background-color: ' +
@@ -247,14 +352,9 @@
                            '#27ae60')}"
                           th:text="${incident.status}"></span>
                 </td>
+                <td th:text="${#temporals.format(incident.reportedAt, 'MMM dd, yyyy HH:mm')}"></td>
+                <td th:text="${incident.technician != null ? incident.technician.name : 'No Technician Assigned'}"></td>
                 <td>
-                    <span class="timestamp" th:text="${#temporals.format(incident.reportedAt, 'MMM dd, yyyy HH:mm')}"></span>
-                </td>
-                <td>
-                    <span th:text="${incident.technician != null ? incident.technician.name : 'No Technician Assigned'}"
-                          class="text-white"></span>
-                </td>
-                <td class="actions-cell">
                     <div class="action-buttons">
                         <!-- Assign Technician -->
                         <form th:action="@{/admin/assign-technician}" method="post" class="action-form">
@@ -267,8 +367,7 @@
                                 </option>
                             </select>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-user-plus"></i>
-                                Assign
+                                <i class="fas fa-user-plus"></i> Assign
                             </button>
                         </form>
 
@@ -281,8 +380,7 @@
                                 <option th:value="RESOLVED" th:selected="${incident.status == 'RESOLVED'}">RESOLVED</option>
                             </select>
                             <button type="submit" class="btn btn-success">
-                                <i class="fas fa-sync-alt"></i>
-                                Update
+                                <i class="fas fa-sync-alt"></i> Update
                             </button>
                         </form>
                     </div>
@@ -298,10 +396,10 @@
 <script>
     $(document).ready(function() {
         $('.select2').select2({
-            placeholder: "Select Technician",
-            allowClear: true,
-            theme: "classic",
-            dropdownParent: $('body')
+            placeholder: function() {
+                return $(this).data('placeholder');
+            },
+            allowClear: true
         });
     });
 </script>

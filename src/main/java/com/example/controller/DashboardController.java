@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.dto.DashboardStats;
+import com.example.entity.RoomAvailability;
 import com.example.service.IncidentService;
 import com.example.service.RoomService;
 import com.example.service.PaymentService;
@@ -27,14 +28,11 @@ public class DashboardController {
     public DashboardStats getDashboardData() {
         // Get the required data from the services
         long totalRooms = roomService.getAllRoomsCount();
-        long availableRooms = roomService.getAvailableRoomsCount();
+        long availableRooms = roomService.getAvailableRoomsCount(RoomAvailability.AVAILABLE);
         long pendingRequestsCount = incidentService.getIncidentsCount();
         long overduePaymentsCount = paymentService.getOverduePaymentsCount();
 
         // Create and return a DashboardStats object containing the data
         return new DashboardStats(totalRooms, availableRooms, pendingRequestsCount, overduePaymentsCount);
     }
-
-    // DashboardStats class to hold the data
-
 }

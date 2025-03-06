@@ -64,11 +64,31 @@ public String home() {
     @GetMapping("admin/incidents")
     public String listIncidents(Model model) {
         List<Incident> incidents = incidentService.getAllIncidents();
-        List<Technician> technicians = technicianRepository.findAll(); // Fetch available technicians
+        List<Technician> technicians = technicianRepository.findAll();// Fetch available technicians
+        List<Room> rooms = roomService.getAllRooms();
+        List<Resident> residents = residentService.getAllResidents();
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("residents", residents);
         model.addAttribute("incidents", incidents);
         model.addAttribute("technicians", technicians);
         return "incident/incident-list";
     }
+    @GetMapping("/admin/incidents/filter")
+    public String listIncidents(@RequestParam(required = false) Long residentId,
+                                @RequestParam(required = false) Long roomId,
+                                Model model) {
+
+        List<Incident> incidents = incidentService.filterIncidents(residentId, roomId);
+        model.addAttribute("incidents", incidents);
+        List<Room> rooms = roomService.getAllRooms();
+        List<Resident> residents = residentService.getAllResidents();
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("residents", residents);
+        List<Technician> technicians = technicianRepository.findAll();
+        model.addAttribute("technicians", technicians);
+        return "incident/incident-list";
+    }
+
 
     @PostMapping("admin/assign-technician")
     public String assignTechnician(@RequestParam Long incidentId, @RequestParam Long technicianId) {
@@ -120,29 +140,29 @@ public String home() {
                 .stream()
                 .map(Room::getEquipments)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
 
         List<String> residents = residentService.searchResidents(term)
                 .stream()
                 .map(Resident::getName)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
 
         List<String> incidentDescriptions = incidentService.searchIncidents(term)
                 .stream()
                 .map(Incident::getDescription)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
 
         List<String> incidentTypes = incidentService.searchByType(term)
                 .stream()
                 .map(incident -> incident.getType().name()) // Assuming IncidentType is an Enum
-                .collect(Collectors.toList());
+                .toList();
 
         List<String> incidentStatuses = incidentService.searchByStatus(term)
                 .stream()
                 .map(incident -> incident.getStatus().name()) // Assuming IncidentStatus is an Enum
-                .collect(Collectors.toList());
+                .toList();
 
         List<String> suggestions = new ArrayList<>();
         suggestions.addAll(rooms);

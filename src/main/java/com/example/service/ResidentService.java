@@ -140,5 +140,9 @@ public class ResidentService {
     public List<Resident> searchResidents(String query) {
         return residentRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query);
     }
+
+    public boolean emailExists(String email) {
+        return residentRepository.existsByEmail(email);
     }
+}
 

@@ -17,7 +17,7 @@ public class Room {
 
     private String size;
     private String equipments;
-    private boolean available;
+    private RoomAvailability available;
 
 
     @OneToOne(mappedBy = "room")

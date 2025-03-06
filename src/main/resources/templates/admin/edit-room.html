@@ -54,24 +54,6 @@
             box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2);
         }
 
-        .form-check-input {
-            background-color: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            width: 1.25rem;
-            height: 1.25rem;
-            margin-top: 0.25rem;
-        }
-
-        .form-check-input:checked {
-            background-color: #3498db;
-            border-color: #3498db;
-        }
-
-        .form-check-input:focus {
-            border-color: #64748b;
-            box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2);
-        }
-
         .btn-primary {
             background: linear-gradient(135deg, #3498db, #2980b9);
             border: none;
@@ -108,10 +90,13 @@
                 <input type="text" id="equipments" th:field="*{equipments}" class="form-control" placeholder="Enter equipment list">
             </div>
             <div class="mb-3">
-                <div class="form-check">
-                    <input type="checkbox" id="available" th:field="*{available}" class="form-check-input">
-                    <label for="available" class="form-label" style="margin-left: 0.5rem;">Available</label>
-                </div>
+                <label for="available" class="form-label">Availability</label>
+                <select id="available" th:field="*{available}" class="form-control">
+                    <option th:each="status : ${T(com.example.entity.RoomAvailability).values()}"
+                            th:value="${status}"
+                            th:text="${status}">
+                    </option>
+                </select>
             </div>
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">Save Changes</button>

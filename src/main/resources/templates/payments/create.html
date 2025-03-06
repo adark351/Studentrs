@@ -143,7 +143,7 @@
   <h1 class="page-title"><i class="fas fa-file-invoice-dollar me-2"></i>Create Payment</h1>
   <form action="/admin/payments" method="post">
     <div class="form-group">
-      <label for="residentId">Resident ID:</label>
+      <label for="residentId">Resident :</label>
       <select id="residentId" name="residentId" class="form-control select2" required>
         <option value="" disabled selected>Select Resident</option>
         <option th:each="resident : ${residents}" th:value="${resident.id}" th:text="${resident.name}"></option>

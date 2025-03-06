@@ -24,6 +24,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findByResidentId(Long residentId);
 
     Optional<Payment> findById(Long id);
+    List<Payment> findByStatusAndDueDateAfter(PaymentStatus status, LocalDate dueDate);
+
 
 
 }

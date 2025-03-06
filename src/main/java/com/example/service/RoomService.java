@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.entity.Resident;
 import com.example.entity.Room;
+import com.example.entity.RoomAvailability;
 import com.example.repository.ResidentRepository;
 import com.example.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,8 @@ public class RoomService {
 
     @Autowired
     private ResidentRepository residentRepository;
-    private final  ResidentService residentService;
+
+    private final ResidentService residentService;
 
     public RoomService(ResidentService residentService) {
         this.residentService = residentService;
@@ -29,20 +31,24 @@ public class RoomService {
     public List<Room> getAllRooms() {
         return roomRepository.findAll();
     }
-   public long getAllRoomsCount() {
+
+    // Count all rooms
+    public long getAllRoomsCount() {
         return roomRepository.count();
     }
-    public long getAvailableRoomsCount() {
-        return roomRepository.countByAvailable(true);
+
+    // Count available rooms based on RoomAvailability
+    public long getAvailableRoomsCount(RoomAvailability availability) {
+        return roomRepository.countByAvailable(availability);
     }
+
+    // Search rooms by size or equipment
     public List<Room> searchRooms(String query) {
         return roomRepository.findBySizeContainingIgnoreCaseOrEquipmentsContainingIgnoreCase(query, query);
     }
-
-
     // Add a new room
     public Room addRoom(Room room) {
-        room.setAvailable(true); // Set default availability
+        room.setAvailable(RoomAvailability.AVAILABLE); // Set default availability
         return roomRepository.save(room);
     }
 
@@ -51,18 +57,17 @@ public class RoomService {
         return roomRepository.findById(id);
     }
 
-
-
+    // Update room details
     public void updateRoom(Room room) {
         Room existingRoom = roomRepository.findById(room.getId())
                 .orElseThrow(() -> new RuntimeException("Room not found"));
 
-        // Set the room's properties
+        // Update room properties
         existingRoom.setSize(room.getSize());
         existingRoom.setEquipments(room.getEquipments());
-        existingRoom.setAvailable(room.isAvailable());
+        existingRoom.setAvailable(room.getAvailable());
 
-        // Set the resident if the id is provided (i.e., not null)
+        // Assign resident if provided
         if (room.getResident() != null && room.getResident().getId() != null) {
             Resident resident = residentService.getResidentByIde(room.getResident().getId());
             existingRoom.setResident(resident);
@@ -72,7 +77,6 @@ public class RoomService {
     }
 
     // Delete a room
-// In RoomService or Controller
     @Transactional
     public void deleteRoom(Long roomId) {
         Room room = roomRepository.findById(roomId)
@@ -80,10 +84,9 @@ public class RoomService {
 
         // Unlink the room from resident, if any
         if (room.getResident() != null) {
-            room.getResident().setRoom(null);  // Remove the reference to the room
+            room.getResident().setRoom(null);
         }
 
-        // Now delete the room
         roomRepository.delete(room);
     }
 
@@ -96,7 +99,7 @@ public class RoomService {
             Room room = roomOptional.get();
             Resident resident = residentOptional.get();
 
-            // Unassign the current resident if the room is already occupied
+            // Unassign current resident if room is occupied
             if (room.getResident() != null) {
                 Resident currentResident = room.getResident();
                 currentResident.setRoom(null);

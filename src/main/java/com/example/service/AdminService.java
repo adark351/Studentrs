@@ -20,7 +20,7 @@ public class AdminService {
         return adminRepository.save(admin);
     }
 
-    public Admin findByUsername(String username) {
-        return adminRepository.findByUsername(username).orElse(null);
+    public boolean emailExists(String email) {
+        return adminRepository.existsByEmail(email);
     }
 }
