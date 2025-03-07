@@ -70,9 +70,6 @@ public class ResidentService {
         if (existingResident.isPresent()) {
             throw new RuntimeException("Email already in use.");
         }
-
-        // Encode the password before saving
-        resident.setPassword(passwordEncoder.encode(resident.getPassword()));
         return residentRepository.save(resident);
     }
     /**

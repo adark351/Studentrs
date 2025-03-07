@@ -16,7 +16,6 @@ public class AdminService {
     private PasswordEncoder passwordEncoder;
 
     public Admin saveAdmin(Admin admin) {
-        admin.setPassword(passwordEncoder.encode(admin.getPassword()));  // Encode password
         return adminRepository.save(admin);
     }
 

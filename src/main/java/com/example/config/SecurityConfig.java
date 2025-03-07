@@ -26,7 +26,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login","/residents/**", "/signup", "/index","/css/**", "/js/**", "/images/**").permitAll()  // Allow login and public resources
+                        .requestMatchers("/login","/residents/**", "/signup/**", "/index","/css/**", "/js/**", "/images/**").permitAll()  // Allow login and public resources
                         .requestMatchers("/admin/**").hasRole("ADMIN")  // Only admins can access admin routes
                         .anyRequest().authenticated()  // All other routes require authentication
                 )
@@ -65,7 +65,7 @@ public class SecurityConfig {
             } else if (authentication.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_RESIDENT"))) {
                 response.sendRedirect("/resident/dashboard");  // Redirect residents
             } else {
-                response.sendRedirect("/");  // Default redirect
+                response.sendRedirect("/index");  // Default redirect
             }
         };
     }

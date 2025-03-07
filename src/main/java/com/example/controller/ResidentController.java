@@ -3,9 +3,11 @@ package com.example.controller;
 import com.example.entity.Payment;
 import com.example.entity.Resident;
 import com.example.entity.Room;
+import com.example.service.PaymentReceiptService;
 import com.example.service.PaymentService;
 import com.example.service.ResidentService;
 import com.example.service.RoomService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +28,8 @@ public class ResidentController {
         this.residentService = residentService;
         this.roomService = roomService;
     }
-
+    @Autowired
+    PaymentReceiptService paymentReceiptService;
     private final ResidentService residentService;
     private final RoomService roomService;
     @Autowired
@@ -83,5 +87,25 @@ public class ResidentController {
 
         model.addAttribute("payments", payments);
         return "payments/resident-list"; // Assuming there’s a Thymeleaf template named `resident-list.html`
+    }
+    @GetMapping("/resident/{paymentId}/receipt")
+    public void downloadReceipt(@PathVariable Long paymentId, HttpServletResponse response) {
+        try {
+            // Fetch the payment by ID
+            Payment payment = paymentService.getPaymentById(paymentId);
+            if (payment != null) {
+                // Generate the receipt
+                paymentReceiptService.generateReceipt(payment, response);
+            } else {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Payment not found");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            try {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating receipt");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
     }
 }

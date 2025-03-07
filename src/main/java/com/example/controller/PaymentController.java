@@ -72,25 +72,6 @@ private final PaymentReceiptService paymentReceiptService;
         paymentService.markPaymentAsPaid(id);
         return "redirect:/admin/payments";
     }
-    @GetMapping("/{paymentId}/receipt")
-    public void downloadReceipt(@PathVariable Long paymentId, HttpServletResponse response) {
-        try {
-            // Fetch the payment by ID
-            Payment payment = paymentService.getPaymentById(paymentId);
-            if (payment != null) {
-                // Generate the receipt
-                paymentReceiptService.generateReceipt(payment, response);
-            } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Payment not found");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            try {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating receipt");
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        }
-    }
+
 
 }

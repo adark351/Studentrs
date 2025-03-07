@@ -194,9 +194,9 @@
                         </p>
                         <p>
                             <span class="info-label"><i class="fas fa-check-circle me-2"></i>Availability:</span>
-                            <span class="info-value"
-                                  th:text="${room.available == T(com.example.entity.RoomAvailability).AVAILABLE ? 'Available' : (room.available == T(com.example.entity.RoomAvailability).OCCUPIED ? 'Occupied' : 'Under Maintenance')}">
-    </span>
+                            <span class="info-value" th:text="${room.available != null ? (room.available.name() == 'AVAILABLE' ? 'Available' : (room.available.name() == 'OCCUPIED' ? 'Occupied' : 'Under Maintenance')) : 'Unknown'}"></span>
+
+
                         </p>
 
                         <div class="mt-3">

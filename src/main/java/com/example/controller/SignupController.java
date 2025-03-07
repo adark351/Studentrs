@@ -46,8 +46,12 @@ public class SignupController {
             RedirectAttributes redirectAttributes) {
 
         try {
+            // Log incoming data
+            logger.info("Received admin registration for username: {}", admin.getUsername());
+
             // Encode password before saving
-            admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+            String rawPassword = admin.getPassword();
+            admin.setPassword(passwordEncoder.encode(rawPassword));
 
             // Save admin
             adminService.saveAdmin(admin);
@@ -75,14 +79,9 @@ public class SignupController {
             // Encode password before saving
             resident.setPassword(passwordEncoder.encode(resident.getPassword()));
 
-            // Save resident - wrap with additional try/catch to pinpoint issues
-            try {
-                residentService.signupResident(resident);
-                logger.info("Resident registration successful for: {}", resident.getEmail());
-            } catch (Exception e) {
-                logger.error("Error in residentService.signupResident(): ", e);
-                throw e; // Re-throw to be caught by outer catch
-            }
+            // Save resident
+            residentService.signupResident(resident);
+            logger.info("Resident registration successful for: {}", resident.getEmail());
 
             // Add success message
             redirectAttributes.addFlashAttribute("signupSuccess", "Resident registration successful!");
@@ -92,7 +91,7 @@ public class SignupController {
             logger.error("Error during resident registration for {}: {}",
                     resident.getEmail(), e.getMessage(), e);
 
-            // Add more specific error message based on exception type
+            // error message based on exception type
             String errorMsg = "Registration failed: " + e.getMessage();
             redirectAttributes.addFlashAttribute("signupError", errorMsg);
             redirectAttributes.addFlashAttribute("resident", resident);
