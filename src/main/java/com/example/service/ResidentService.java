@@ -22,8 +22,6 @@ public class ResidentService {
     private ResidentRepository residentRepository;
     @Autowired
     private RoomRepository roomRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     /**
      * Retrieve all residents.
      */
@@ -41,15 +39,6 @@ public class ResidentService {
         return residentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Resident not found"));
     }
-
-
-    /**
-     * Add a new resident.
-     */
-    public Resident addResident(Resident resident) {
-        return residentRepository.save(resident);
-    }
-
     /**
      * Update an existing resident.
      */
@@ -104,42 +93,10 @@ public class ResidentService {
 
         return Optional.empty();
     }
-    public Resident assignRoom(Long residentId, Long roomId) {
-        Resident resident = residentRepository.findById(residentId)
-                .orElseThrow(() -> new RuntimeException("Resident not found"));
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
 
-        // Ensure the room is available
-        if (room.getResident() != null) {
-            throw new RuntimeException("Room is already occupied");
-        }
-
-        // Update the room and resident relationship
-        resident.setRoom(room);
-        room.setResident(resident);
-
-        return residentRepository.save(resident);
-    }
-
-    public Resident removeRoom(Long residentId) {
-        Resident resident = residentRepository.findById(residentId)
-                .orElseThrow(() -> new RuntimeException("Resident not found"));
-
-        Room room = resident.getRoom();
-        if (room != null) {
-            room.setResident(null); // Detach the resident from the room
-            resident.setRoom(null); // Detach the room from the resident
-        }
-
-        return residentRepository.save(resident);
-    }
     public List<Resident> searchResidents(String query) {
         return residentRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query);
     }
 
-    public boolean emailExists(String email) {
-        return residentRepository.existsByEmail(email);
-    }
 }
 

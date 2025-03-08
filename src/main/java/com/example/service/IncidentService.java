@@ -35,7 +35,7 @@ public class IncidentService {
         Incident incident = incidentRepository.findById(incidentId).orElseThrow(() -> new RuntimeException("Incident not found"));
         Technician technician = technicianRepository.findById(technicianId).orElseThrow(() -> new RuntimeException("Technician not found"));
 
-        incident.setTechnician(technician); // Assuming Incident entity has a `Technician` field
+        incident.setTechnician(technician);
         incidentRepository.save(incident);
     }
 

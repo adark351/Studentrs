@@ -41,7 +41,7 @@ public String home() {
     // This method handles requests for the login page
     @GetMapping("/login")
     public String login() {
-        return "login";  // This should match the name of your login view (login.html)
+        return "login";
     }
 
     // This method handles requests for the admin dashboard page
